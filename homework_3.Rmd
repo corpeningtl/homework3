@@ -1,0 +1,83 @@
+---
+title: "Regression Homework"
+author: "Tori Corpening"
+date: "4/26/2021"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(readxl)
+library(dplyr)
+library(tidyr)
+library(moderndive)
+```
+
+### (1) Import the mlbattendance2015 data set from the class asulearn page into R.
+```{r}
+# To import the dataset, you have to upload the file into Rstudio and check the path names. Make sure that the data is visable in the import window. Make sure the data is set up with commas so that all values are displayed. 
+library(readxl)
+mlbattendance2015 <- read_excel("mlbattendance2015.xlsx")
+```
+
+
+### (2) Build a regression model to predict average attendance from Winning Percentage (Winpct).  Also provide a graphical summary of the relationship.
+
+```{r}
+aafromwp_model <- lm(avgattendance ~ winpct + League, data=mlbattendance2015)
+
+aafromwp_model
+
+ggplot(mlbattendance2015, aes(x = avgattendance, y = winpct)) +
+  geom_point() +
+  labs(x = "Average Attendance", y = "Percent of Winning",
+       title = "Relationship between the changes of winning and the average attendance of games") +  
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+
+### (3) Next, add League as a predictor to the previous model, in a parallel lines model.
+```{r}
+ggplot(mlbattendance2015, aes(x = winpct, y = avgattendance, color = League)) +
+  geom_point() +
+  labs(x = "Percent of Winning", y = "Average Attendance", color = "League") +
+  geom_parallel_slopes(se = FALSE)
+```
+
+
+### (4) Finally, add potential interaction between League and Winning Percentage as a predictor, creating a possible non-parallel lines model.
+```{r}
+ggplot(mlbattendance2015, aes(x = winpct , y = avgattendance, color = League)) +
+  geom_point() +
+  labs(x = "Percent of Winning", y = "Average Attendance ", color = "League") +
+  geom_smooth(method = "lm", se = FALSE)
+
+```
+
+### (5) Provide a graph of the data that incproprates both winning percentage and league as predictors and avg attendance as the response.
+```{r}
+ggplot(mlbattendance2015, aes(x = winpct, y = avgattendance , color = League )) +
+  geom_point() +
+  labs(x = "Percent of Winning", y = "Average Attendance", color = "League") +
+  geom_parallel_slopes(se = FALSE)
+```
+### (6) Which of the models in (2), (3), and (4) do you think is the best?  Clearly justify your answer.
+```{r}
+# The best model would have to be the 4th model since it is looking at more than one variable with corresponding to attendance and winning. I personally see the correlation better since it would make sense that a large attendance would increase the chances of winning. The lines also aid in that connection. The national numbers also help to see the difference between the American League since I know that Japan is really into baseball. You can also see regardless of the the league type, chances of winning do increase. 
+```
+### (7) Predict average attendance for an American League team with a 60% winning percentage, and for a National League Team with a 50% winning percentage based upon your best model from steps (2), (3), (4).
+
+```{r}
+ggplot(subset(mlbattendance2015, League == "American"),
+       aes(x = winpct, y = avgattendance, color= League)) +
+  geom_smooth(method = "lm", se = FALSE)
+
+```
+```{r}
+ggplot(subset(mlbattendance2015, League == "National"),
+       aes(x = winpct, y = avgattendance, color= League)) +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+
